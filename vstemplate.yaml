@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: modelmesh
+  namespace: <namespace>
+spec:
+  gateways:
+    - opendatahub/odh-gateway
+  hosts:
+    - '*'
+  http:
+    - match:
+        - uri:
+            prefix: /modelmesh/<namespace>/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: modelmesh-serving.<namespace>.svc.cluster.local
+            port:
+              number: 8008

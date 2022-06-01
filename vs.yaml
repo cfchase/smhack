@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: modelmesh
+  namespace: tryit
+spec:
+  gateways:
+    - opendatahub/odh-gateway
+  hosts:
+    - '*'
+  http:
+    - match:
+        - uri:
+            prefix: /modelmesh/tryit/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: modelmesh-serving.tryit.svc.cluster.local
+            port:
+              number: 8008

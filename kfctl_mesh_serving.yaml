@@ -1,0 +1,49 @@
+apiVersion: kfdef.apps.kubeflow.org/v1
+kind: KfDef
+metadata:
+  name: opendatahub
+  namespace: opendatahub
+spec:
+  applications:
+  - kustomizeConfig:
+      repoRef:
+        name: manifests
+        path: odh-common
+    name: odh-common
+  - kustomizeConfig:
+      repoRef:
+        name: manifests
+        path: openshift-service-mesh
+    name: openshift-service-mesh
+  - kustomizeConfig:
+      parameters:
+        - name: s3_endpoint_url
+          value: "s3.odh.com"
+      repoRef:
+        name: manifests
+        path: jupyterhub/jupyterhub
+    name: jupyterhub
+  - kustomizeConfig:
+      overlays:
+      #- cuda-11.0.3
+      - additional
+      repoRef:
+        name: manifests
+        path: jupyterhub/notebook-images
+    name: notebook-images
+  - kustomizeConfig:
+      repoRef:
+        name: manifests
+        path: model-mesh
+    name: model-mesh
+  - kustomizeConfig:
+      repoRef:
+        name: manifests
+        path: odh-dashboard
+    name: odh-dashboard
+  repos:
+  - name: kf-manifests
+    uri: https://github.com/opendatahub-io/manifests/tarball/v1.4.0-rc.2-openshift
+  - name: manifests
+    uri: https://github.com/opendatahub-io/odh-manifests/tarball/master
+  version: master
